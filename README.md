@@ -1,9 +1,11 @@
 # VK-get-friends-report
 
+Русская версия находится в файле README_RU.md.
+
 ## Features
 
 * Saving in csv, tsv and json format
-* Easy to add new formats
+* Easy to add new file types support
 * Easy to change report structure (e.g. add relationship data)
 * Covered with tests
 * Pagination support
@@ -71,8 +73,9 @@ Cool feature: you still can create big csv or tsv files - amount of users **in f
 
 ### Project structure
 
-* `./README`:                    This file.
-* `./config.py`:                 Configuration file with default parameter values and VK APP ID
+* `./README.md`:                 This file.
+* `./README_RU.md`               Russian version of this file.
+* `./config.py`:                 Configuration file with default parameter values and VK APP ID.
 * `./main.py`:                   Entry point. Also, it initializes logging.
 * `./get_access_token.py`:       Little script opens VK auth page.
 * `./tests.py`                   Tests. Based on python unittest lib.
@@ -124,6 +127,8 @@ Only thing that should be clarified is **line length**.
 vk_api_handler, saver, tests and report_creator modules written with 72 line length limit.
 
 display_handler written with 99 line length limit.
+
+Set limitation for other files has no sense.
 
 ---
 
