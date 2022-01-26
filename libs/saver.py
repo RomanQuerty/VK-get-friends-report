@@ -181,7 +181,7 @@ class Saver:
         elif param_name == 'pagination':
             self.pagination = not self.pagination
         else:
-            raise Exception(f"No parameter with name {param_name}")
+            raise Exception(f'No parameter with name {param_name}')
 
     def get_full_filename(self):
         """Returning full file path from current directory"""
@@ -216,7 +216,7 @@ class Saver:
 
 
 class WrongParameterValueError(Exception):
-    def __init__(self, value="Wrong parameter given"):
+    def __init__(self, value='Wrong parameter given'):
         self.value = value
 
     def __str__(self):

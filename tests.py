@@ -4,10 +4,10 @@ import csv
 from random import randint
 from shutil import rmtree
 
-from vk_api_handler import VkApiHandler
-from saver import Saver, WrongParameterValueError
+from libs.vk_api_handler import VkApiHandler
+from libs.saver import Saver, WrongParameterValueError
 import config
-from report_creator import create_report
+from libs.report_creator import create_report
 
 
 class TestVkApiHandler(unittest.TestCase):
@@ -51,16 +51,16 @@ class TestVkApiHandler(unittest.TestCase):
         params = {
             'user_id': 210700286
         }
-        response = self.vk_api_handler.run_VK_method(method_name,
-                                                     params)
+        response = self.vk_api_handler.\
+            get_VK_method_response(method_name, params)
         expected_response_content = {
             "response": [
                 {
-                    "id": 210700286,
-                    "first_name": "Lindsey",
-                    "last_name": "Stirling",
-                    "can_access_closed": True,
-                    "is_closed": False
+                    'id': 210700286,
+                    'first_name': 'Lindsey',
+                    'last_name': 'Stirling',
+                    'can_access_closed': True,
+                    'is_closed': False
                 }
             ]
         }
@@ -73,16 +73,16 @@ class TestVkApiHandler(unittest.TestCase):
         params = {
             'user_id': 10050301
         }
-        response = self.vk_api_handler.run_VK_method(method_name,
-                                                     params)
+        response = self.vk_api_handler.\
+            get_VK_method_response(method_name, params)
         expected_response_content = {
             "response": [
                 {
-                    "id": 10050301,
-                    "first_name": "Данила",
-                    "last_name": "Поперечный",
-                    "can_access_closed": True,
-                    "is_closed": False
+                    'id': 10050301,
+                    'first_name': 'Данила',
+                    'last_name': 'Поперечный',
+                    'can_access_closed': True,
+                    'is_closed': False
                 }
             ]
         }
@@ -96,8 +96,8 @@ class TestVkApiHandler(unittest.TestCase):
             'user_id': 10050301
         }
         with self.assertRaises(Exception):
-            response = self.vk_api_handler.run_VK_method(method_name,
-                                                         params)
+            response = self.vk_api_handler.\
+                get_VK_method_response(method_name, params)
 
     def test_get_friends_amount_1(self):
         """Case with Pavel Durov"""
@@ -130,19 +130,19 @@ class TestVkApiHandler(unittest.TestCase):
         friends_data[0].pop('track_code')  # track_code always different
         expected_friends_data = [          # so we delete it from tested
             {                              # data
-                "id": 26047,
-                "first_name": "Александр",
-                "last_name": "Степанов",
-                "can_access_closed": False,
-                "is_closed": True,
-                "sex": 2,
-                "city": {
-                    "id": 2,
-                    "title": "Санкт-Петербург"
+                'id': 26047,
+                'first_name': 'Александр',
+                'last_name': 'Степанов',
+                'can_access_closed': False,
+                'is_closed': True,
+                'sex': 2,
+                'city': {
+                    'id': 2,
+                    'title': 'Санкт-Петербург'
                 },
-                "country": {
-                    "title": "Россия",
-                    "id": 1
+                'country': {
+                    'title': 'Россия',
+                    'id': 1
                 }
             }
         ]

@@ -1,7 +1,7 @@
 import os
-from saver import Saver, WrongParameterValueError
-from vk_api_handler import VkApiHandler
-import report_creator
+from .saver import Saver, WrongParameterValueError
+from .vk_api_handler import VkApiHandler
+from libs import report_creator
 import logging
 
 
@@ -31,7 +31,7 @@ class ConsoleApp:
     def __init__(self):
         self.vk_api_handler = VkApiHandler()
         self.saver = Saver()
-        logging.debug("ConsoleApp initialised")
+        logging.debug('ConsoleApp initialised')
 
     def __print_configuration(self):
         print(f'''
@@ -41,7 +41,7 @@ class ConsoleApp:
         Output file: {self.saver.get_full_filename()}.{self.saver.
               output_file_type}
         Amount of users in request: {self.vk_api_handler.config['users_in_request']}
-        Amount of users in file: {self.saver.users_in_file} (works only if pagination is off)
+        Amount of users in file: {self.saver.users_in_file} (works only if pagination is on)
         Pagination: {self.saver.pagination}\n''')
 
     def main_screen(self, message=''):
