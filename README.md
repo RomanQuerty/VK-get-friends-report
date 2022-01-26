@@ -5,6 +5,7 @@
 ## Features
 
 * Saving in csv, tsv and json format
+* Report sorted with user firstname via VK API method parameter
 * Easy to add new file types support
 * Easy to change report structure (e.g. add relationship data)
 * Covered with tests
