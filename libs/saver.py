@@ -80,8 +80,8 @@ class Saver:
     2. Run saver_instance.save(object_to_save)
 
     To add other data types support, just add function of creating
-    file and function of appending data in file to create_new_file_funcs
-    and append_funcs dictionaries.
+    file and function of appending data to create_new_file_funcs
+    and append_funcs dictionaries (look below).
 
     Saving object example:
     [
@@ -97,7 +97,7 @@ class Saver:
     ]
     """
     # This functions creates new file and set up headings if needed.
-    # They takes object and created file_name (object needed for
+    # They takes object and output_file_name (object needed for
     # headings set up)
     create_new_file_funcs = {
         'csv': create_new_csv,
