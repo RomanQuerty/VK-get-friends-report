@@ -8,7 +8,12 @@ def raise_exception_if_vk_response_is_error(response):
     logging.debug(f'Response got:')
     logging.debug(response.content)
     if 'error' in response.text:
-        raise Exception(f"VK responded with error\n{response.text}")
+        error_info = response.json()['error']
+        raise Exception(f"VK responded with error\n"
+                        f"Error code: {error_info['error_code']}\n"
+                        f"Error message: {error_info['error_msg']}\n"
+                        f"Requested params: "
+                        f"{error_info['request_params']}")
 
 
 class VkApiHandler:
