@@ -3,6 +3,10 @@ import logging
 import re
 
 
+"""
+This module implements logic of creation report
+"""
+
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -32,15 +36,16 @@ def date_string_to_ISO_format(date_string):
     if len(month) == 1:
         month = f'0{month}'
     if date_with_year:
-        return f'{year}-{month}-{day}'
+        return f'{year}-{month}-{day}'  # ISO format yyyy-mm-dd
     else:
-        return f'{month}-{day}'
+        return f'{month}-{day}'  # ISO format mm-dd
 
 
 def create_report(vk_api_handler, offset=0):
     """
     This method gets raw VK data and changes it according report
-    structure (skipping deleted and banned accounts).
+    structure (skipping deleted and banned accounts). Each report is
+    one processed request.
     e.g. raw vk friends data:
         {
             "response":{

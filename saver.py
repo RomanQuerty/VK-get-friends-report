@@ -5,21 +5,6 @@ import os
 
 import config as default_config
 
-'''
-Saving object example:
-[
-    {
-        "First name": "Akio",
-        "Last name": "Switch",
-        "Country": "Россия",
-        "City": "Москва",
-        "Birthdate": "Нет данных",
-        "Sex": "Male"
-    },
-    ...
-]
-'''
-
 
 def create_new_csv(obj, file_name):
     logging.info('Creating new csv')
@@ -85,12 +70,41 @@ def append_with_json(obj, file_name):
 
 
 class Saver:
+    """
+    This class is responsible for saving data
+
+    How to use:
+    1. Change config values if you need: output_dir, output_file_name,
+    output_file_type, users_in_file, pagination.
+    You can do it using saver_instance.change_param method.
+    2. Run saver_instance.save(object_to_save)
+
+    To add other data types support, just add function of creating
+    file and function of appending data in file to create_new_file_funcs
+    and append_funcs dictionaries.
+
+    Saving object example:
+    [
+        {
+            "First name": "Akio",
+            "Last name": "Switch",
+            "Country": "Россия",
+            "City": "Москва",
+            "Birthdate": "No data",
+            "Sex": "Male"
+        },
+        ...
+    ]
+    """
+    # This functions creates new file and set up headings if needed.
+    # They takes object and created file_name (object needed for
+    # headings set up)
     create_new_file_funcs = {
         'csv': create_new_csv,
         'tsv': create_new_tsv,
         'json': create_new_json,
     }
-
+    # This functions appends object into existing file
     append_funcs = {
         'csv': append_with_csv,
         'tsv': append_with_tsv,
@@ -114,6 +128,34 @@ class Saver:
         self.users_in_current_file = 0
         self.file_prefix = 0
         logging.debug('Saver initialised')
+
+    def save(self, obj):
+        self.__create_output_dir_if_needed()
+        output_file = self.get_full_filename()
+        saved_friends = 0
+        if self.file_prefix == 0:  # Creating first file
+            self.create_new_file(obj)
+        # If pagination is False, then file can contain unlimited amount
+        # of users
+        if not self.pagination:
+            self.users_in_file = 99999999999
+        logging.info(f'Saver started to saving object in file '
+                     f'{output_file}')
+        logging.info(f'File type is {self.output_file_type}')
+        logging.debug(f'Saved object: '
+                      f'{bytes(str(obj), encoding="utf-8")}')
+        while saved_friends < len(obj):
+            if self.users_in_current_file >= self.users_in_file:
+                self.create_new_file(obj)
+            # Amount of people we can add:
+            free_place_in_file = self.users_in_file - \
+                                 self.users_in_current_file
+            logging.debug(f'Free place in file {free_place_in_file}')
+            appending_friends = obj[saved_friends: saved_friends +
+                                                   free_place_in_file]
+            self.append_to_file(appending_friends)
+            saved_friends += len(appending_friends)
+            logging.debug(f'Saved friends {saved_friends} from saver')
 
     def change_output_file_type(self, new_value):
         if new_value in Saver.append_funcs:
@@ -171,31 +213,6 @@ class Saver:
         file_name = self.get_full_filename()
         Saver.append_funcs[self.output_file_type](obj, file_name)
         self.users_in_current_file += len(obj)
-
-    def save(self, obj):
-        self.__create_output_dir_if_needed()
-        output_file = self.get_full_filename()
-        saved_friends = 0
-        if self.file_prefix == 0:  # Creating first file
-            self.create_new_file(obj)
-        # If pagination is False, then file can contain unlimited amount
-        # of users
-        if not self.pagination:
-            self.users_in_file = 99999999999
-        logging.info(f'Saver started to saving object in file '
-                     f'{output_file}')
-        logging.info(f'File type is {self.output_file_type}')
-        logging.debug(f'Saved object: '
-                      f'{bytes(str(obj), encoding="utf-8")}')
-        while saved_friends < len(obj):
-            if self.users_in_current_file >= self.users_in_file:
-                self.create_new_file(obj)
-            # Amount of people we can add:
-            free_place_in_file = self.users_in_file - \
-                                 self.users_in_current_file
-            self.append_to_file(obj[saved_friends: free_place_in_file])
-            saved_friends += len(obj[saved_friends: free_place_in_file])
-            logging.debug(f'Saved friends {saved_friends} from saver')
 
 
 class WrongParameterValueError(Exception):

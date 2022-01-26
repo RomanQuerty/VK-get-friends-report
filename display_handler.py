@@ -38,7 +38,7 @@ class ConsoleApp:
         Current configuration:
         Access token: {self.vk_api_handler.config['access_token']}
         User ID: {self.vk_api_handler.config['user_id']}
-        Output file: {self.saver.output_dir}{self.saver.output_file_name}.{self.saver.
+        Output file: {self.saver.get_full_filename()}.{self.saver.
               output_file_type}
         Amount of users in request: {self.vk_api_handler.config['users_in_request']}
         Amount of users in file: {self.saver.users_in_file} (works only if pagination is off)
@@ -78,11 +78,18 @@ class ConsoleApp:
         self.exit()
 
     def change_config_parameter(self, param_name):
+        """The way how I change parameters are a little bit clumsy, but
+        refactoring all of parameters will take too much time. I suppose
+        there is no so much additional parameters we can add in this
+        system, so you probable will never change this part of code. But
+        if you suddenly will, you better should refactor it.
+        """
         logging.info(f'Changing parameter "{param_name}"')
         print(f'''
         You going to change {param_name}.
         
         Please, enter new value.
+        If you changed your mind just press enter.
         ''')
         if param_name == 'output_file_type':
             Saver.print_supported_types()
@@ -94,6 +101,9 @@ class ConsoleApp:
                                              f'successfully changed')
             return
         new_value = input()
+        if new_value == '':
+            self.change_configuration_screen(f'Nothing was changed')
+            return
         # We have different config params in vk_api_handler and in saver
         # so we need to choose which parameter we want to change.
         # It's easiest but, probably, not the best way how to choose:
