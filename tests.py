@@ -10,10 +10,6 @@ import config
 from report_creator import create_report
 
 
-# https://api.vk.com/method/friends.get?v=5.131&access_token=92f0f33109fd7904157268512b3d13811321d923c0555ddd534caed5ffa4c8007b8dfb820b2b082179d3a
-
-# https://oauth.vk.com/authorize?client_id=1&display=page&redirect_uri=http://example.com/callback&scope=friends&response_type=token&v=5.131&state=123456
-
 class TestVkApiHandler(unittest.TestCase):
 
     def setUp(self):

@@ -7,6 +7,7 @@ import re
 This module implements logic of creation report
 """
 
+
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -27,7 +28,7 @@ def date_string_to_ISO_format(date_string):
     else:       # If date without year
         match = re.search(date_wo_year_pattern, date_string)
         if not match:
-            raise Exception(f"Wrong date recived: {date_string}")
+            raise Exception(f"Wrong date received: {date_string}")
         day = match.group(1)
         month = match.group(2)
         date_with_year = False
