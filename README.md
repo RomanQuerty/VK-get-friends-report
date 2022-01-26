@@ -9,7 +9,7 @@
 * Easy to change report structure (e.g. add relationship data)
 * Covered with tests
 * Pagination support
-* Large Data support
+* Large Data support (works well on PC with lack of RAM)
 * Logging support
 
 ---
