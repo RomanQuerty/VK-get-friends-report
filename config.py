@@ -1,11 +1,9 @@
 
 VK_app_id = 8060115
 
-auth_request = f'https://oauth.vk.com/authorize?client_id={VK_app_id}&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=friends&response_type=token&v=5.131'
+auth_request_url = f'https://oauth.vk.com/authorize?client_id={VK_app_id}&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=friends&response_type=token&v=5.131'
 
-# https://oauth.vk.com/authorize?client_id=8060115&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=friends&response_type=token&v=5.131
-
-default_access_token = 'PUT HERE YOUR TOKEN'
+default_access_token = 'ENTER YOUR TOKEN HERE'
 
 default_user_id = 10050301
 
