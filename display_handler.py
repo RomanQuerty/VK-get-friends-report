@@ -1,5 +1,5 @@
 import os
-from saver import Saver
+from saver import Saver, WrongParameterValueError
 from vk_api_handler import VkApiHandler
 import report_creator
 import logging
@@ -33,19 +33,28 @@ class ConsoleApp:
         self.saver = Saver()
         logging.debug("ConsoleApp initialised")
 
+    def __print_configuration(self):
+        print(f'''
+        Current configuration:
+        Access token: {self.vk_api_handler.config['access_token']}
+        User ID: {self.vk_api_handler.config['user_id']}
+        Output file: {self.saver.output_dir}{self.saver.output_file_name}.{self.saver.
+              output_file_type}
+        Amount of users in request: {self.vk_api_handler.config['users_in_request']}
+        Amount of users in file: {self.saver.users_in_file} (works only if pagination is off)
+        Pagination: {self.saver.pagination}\n''')
+
     def main_screen(self, message=''):
         logging.info(f'Showing main_screen with message "{message}"')
         cls()
         print(f'''
         Hello!
         It's "VK get friends report" app by Maxim Novoselsky.
-        
-        Current configuration:
-        Access token: {self.vk_api_handler.config['access_token']}
-        User ID: {self.vk_api_handler.config['user_id']}
-        Output file: {self.saver.get_full_filename()}.{self.saver.output_file_type}
-        Amount of users in single file: {self.vk_api_handler.config['users_in_request']}
-        
+        ''')
+
+        self.__print_configuration()
+
+        print(f'''
         Please enter:
         1 - Get report
         2 - Change configuration
@@ -64,7 +73,8 @@ class ConsoleApp:
         handle_command(commands_dict)
 
     def save_report(self):
-        report_creator.create_and_save_report(self.vk_api_handler, self.saver)
+        report_creator.create_and_save_reports(self.vk_api_handler,
+                                               self.saver)
         self.exit()
 
     def change_config_parameter(self, param_name):
@@ -74,38 +84,52 @@ class ConsoleApp:
         
         Please, enter new value.
         ''')
+        if param_name == 'output_file_type':
+            Saver.print_supported_types()
+        # If param_name is pagination we will just reverse it (True to
+        # False, or backward) without asking new_value
+        if param_name == 'pagination':
+            self.saver.change_param(param_name, '')
+            self.change_configuration_screen(f'{param_name} '
+                                             f'successfully changed')
+            return
         new_value = input()
         # We have different config params in vk_api_handler and in saver
         # so we need to choose which parameter we want to change.
         # It's easiest but, probably, not the best way how to choose:
         # If parameter not in vk_api handler then it in saver.
-        if param_name in self.vk_api_handler.config:
-            self.vk_api_handler.change_config_param(param_name, new_value)
+        try:
+            if param_name in self.vk_api_handler.config:
+                self.vk_api_handler.change_config_param(param_name, new_value)
+            else:
+                self.saver.change_param(param_name, new_value)
+        except WrongParameterValueError:
+            self.change_configuration_screen(f'Wrong parameter value. '
+                                             f'Parameter has not been '
+                                             f'changed.')
         else:
-            self.saver.change_param(param_name, new_value)
-        self.change_configuration_screen(f'{param_name} successfully changed')
+            self.change_configuration_screen(f'{param_name} '
+                                             f'successfully changed')
 
     def change_configuration_screen(self, message=''):
         logging.info(f'Showing change_configuration_screen with message "{message}"')
         cls()
+        self.__print_configuration()
         print(f'''
-        Current configuration:
-        Access token: {self.vk_api_handler.config['access_token']}
-        User ID: {self.vk_api_handler.config['user_id']}
-        Output file: {self.saver.get_full_filename()}.{self.saver.output_file_type}
-        Amount of users in single file: {self.vk_api_handler.config['users_in_request']}
-        
-        {message}
-        
         What do you want to change?
         1 - Access token
         2 - User ID
         3 - Output file directory
         4 - Output file name
         5 - Output file type
-        6 - Amount of users in single file
-        7 - Get Report
-        8 - Exit
+        6 - Amount of users in request
+        7 - Amount of users in single file
+        8 - Pagination
+        ------------------------------
+        9 - Get Report
+        10 - Exit
+        
+        {message}
         ''')
 
         commands_dict = {
@@ -115,8 +139,10 @@ class ConsoleApp:
             '4': lambda: self.change_config_parameter('output_file_name'),
             '5': lambda: self.change_config_parameter('output_file_type'),
             '6': lambda: self.change_config_parameter('users_in_request'),
-            '7': self.save_report,
-            '8': self.exit,
+            '7': lambda: self.change_config_parameter('users_in_file'),
+            '8': lambda: self.change_config_parameter('pagination'),
+            '9': self.save_report,
+            '10': self.exit,
             'default': lambda: self.change_configuration_screen('Wrong command'),
         }
 

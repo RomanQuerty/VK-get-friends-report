@@ -11,8 +11,12 @@ default_user_id = 10050301
 
 default_output_file_name = 'report'
 
-default_output_file_type = 'json'
+default_output_file_type = 'csv'
+
+default_users_in_request = 100
 
 default_users_in_file = 100
 
-default_directory = 'report/'
+default_directory = ''
+
+default_pagination = False
